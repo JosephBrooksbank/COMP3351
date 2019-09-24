@@ -59,6 +59,30 @@ leafList aTree = case aTree of
                                               else (leafList left) ++ (leafList middle) ++ (leafList right)
 
 
+-- | inOrderMap: takes tree and applies function to it
+-- @aTree: The tree to "modify" (use as base)
+-- @function: The function to apply to every value in the tree
+-- @return a new tree with values given by the original tree put through the function
+inOrderMap function aTree = case aTree of
+                            EmptyNode -> EmptyNode
+                            TriNode a left middle right ->
+                                  TriNode (function a) (inOrderMap function left) (inOrderMap function middle) (inOrderMap function right)
+
+
+
+-- | preOrderFold: Applies function to every value in tree and folds tree
+-- @function: The function to apply to each value
+-- @val: the starting value to combine with the tree values
+-- @aTree: the tree to fold
+-- @return: A tree folded with @function, (usually an int)
+preOrderFold function val aTree = case aTree of
+                                  EmptyNode -> 0
+                                  TriNode a left middle right ->
+                                    (function val a) + (preOrderFold function 0 left)
+                                                   + (preOrderFold function 0 middle)
+                                                   + (preOrderFold function 0 right)
+
+
 
 
 
@@ -71,13 +95,13 @@ allTrue (x:xs) = if x == True
 -- type: allTrue :: [Boolean] -> Boolean
 
 
-split :: [a] -> ([a],[b])
-split [] = ([],[])
-split [x] = ([x],[])
-split (x:y:xs) = let (a,b) = split xs
-                  in
-                    (x:a, y:b)
-
-merge :: (Ord a) => [a] -> [a] -> [a]
-merge [] [] = []
-merge (x:xs) [] = (x:xs)
+-- split :: [a] -> ([a],[b])
+-- split [] = ([],[])
+-- split [x] = ([x],[])
+-- split (x:y:xs) = let (a,b) = split xs
+--                   in
+--                     (x:a, y:b)
+--
+-- merge :: (Ord a) => [a] -> [a] -> [a]
+-- merge [] [] = []
+-- merge (x:xs) [] = (x:xs)
