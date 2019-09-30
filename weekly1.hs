@@ -1,4 +1,5 @@
-
+module W1 where
+  
 data TriTree a = EmptyNode | TriNode a (TriTree a) (TriTree a) (TriTree a)
   deriving(Show)
 instance (Eq a) => Eq (TriTree a) where
@@ -78,30 +79,4 @@ inOrderMap function aTree = case aTree of
 preOrderFold function val aTree = case aTree of
                                   EmptyNode -> 0
                                   TriNode a left middle right ->
-                                    (function val a) + (preOrderFold function 0 left)
-                                                   + (preOrderFold function 0 middle)
-                                                   + (preOrderFold function 0 right)
-
-
-
-
-
-
---folding:
-allTrue [] = True
-allTrue (x:xs) = if x == True
-                then allTrue xs
-                else False
--- type: allTrue :: [Boolean] -> Boolean
-
-
--- split :: [a] -> ([a],[b])
--- split [] = ([],[])
--- split [x] = ([x],[])
--- split (x:y:xs) = let (a,b) = split xs
---                   in
---                     (x:a, y:b)
---
--- merge :: (Ord a) => [a] -> [a] -> [a]
--- merge [] [] = []
--- merge (x:xs) [] = (x:xs)
+                                        (function (preOrderFold function val right) (function (preOrderFold function val middle) (function (preOrderFold function val left) (function val a))))
