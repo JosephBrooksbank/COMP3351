@@ -6,11 +6,15 @@ data Value = Constant (Int) | Unit | Constructor (String, Value) | Tuple [Value]
 
 
 variablesToString patt = case patt of
-                  WildcardPat -> "*"
-                  VariablePat string -> string
-                  -- UnitPat -> NOTE NOT SURE 
-                  ConstantPat num -> show num
-                  ConstructorPat ->
+                    VariablePat string -> [string]
+                    ConstructorPat (string, patt) -> variablesToString patt
+                    TuplePat (patt) -> foldl (\x y -> (variablesToString y) ++ x) [] patt
+                    _ -> []
 
 
-checkPat patt =
+uniqueString list = if (elem (head list) (tail list)) then False
+       else uniqueString (tail list)
+
+
+
+checkPat patt = uniqueString (variablesToString patt)
