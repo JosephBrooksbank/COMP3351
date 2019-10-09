@@ -14,4 +14,23 @@ instance Show (AntState a) where
 
 
 
+-- functor example
+-- instance Functor [] where fmap = map
+
 data Tree a = EmptyNode | TreeNode a (Tree a) (Tree a)
+  deriving (Show)
+
+instance Functor Tree where
+  fmap f EmptyNode = EmptyNode
+  fmap f (TreeNode val left right) = TreeNode (f val) (fmap f left) (fmap f right)
+
+
+
+
+
+-- Getting input
+
+main = do
+  putStr "Enter your name"
+  name <- getLine
+  putStrLn ("Hello" ++ name)

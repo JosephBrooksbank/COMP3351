@@ -1,3 +1,5 @@
+module A6 where
+
 
 -- | firstAnswer: Returns first non Nothing answer in list when operated on by funcion
 -- @function: The function to apply to the elements of the list
