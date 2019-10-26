@@ -1,0 +1,6 @@
+#lang racket 
+
+(define (allTrue listItem)
+  (if (= #f (first listItem))
+      #f
+      (allTrue rest listItem)))
