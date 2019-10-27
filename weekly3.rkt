@@ -15,11 +15,11 @@
 (define-empty-tokens bool-values (TRUE FALSE))
 (define-empty-tokens null-def (NULL))
 (define-empty-tokens parens (LEFTSQUARE RIGHTSQUARE LEFTCURLY RIGHTCURLY))
-(define-empty-tokens misc (QUOTE APOS DOT DASH PLUS COMMA COLON))
+(define-empty-tokens misc (QUOTE APOS DOT DASH COMMA COLON))
 (define-empty-tokens end-of-file (EOF))
 
 ;;; Variables, NOT empty token 
-(define-tokens alphas-numbers (STRING NUMBER OBJECT ARRAY))
+(define-tokens alphas-numbers (STRING NUMBER))
 
 
 ;;; Words allowed in language 
@@ -39,13 +39,15 @@
    [(:or "true" "True")          (token-TRUE)]
    [(:or "false" "False")        (token-FALSE)]
    ["null"                      (token-NULL)]
-   [(:: #\" (:* any-char) #\") (token-STRING lexeme)]
-   [(:or (:+ numeric) (:: (:+ numeric) #\. (:* numeric))) (token-NUMBER lexeme)]
-   
+   ;;; I think what I actually wrote was parsing, as it filtered out invalid integers. I'm leaving it here as a comment in case this is actually what we want for the lexer, replace line 44 with line 43 if this is the case. 
+   ;;;;[(:: (:? #\-) (:or #\0 (:: (char-range #\1 #\9) (:* numeric)) (:: (:+ numeric) #\. (:+ numeric)))) (token-NUMBER lexeme)]
+   [(:: (:? #\-) (:or (:+ numeric) (:: (:+ numeric) #\. (:+ numeric)))) (token-NUMBER lexeme)]
+   [(:+ (:or alphabetic numeric symbolic (intersection punctuation (:~ #\" #\: #\,)) "\\\"")) (token-STRING lexeme)]
   
    ;;; whitespace and input-port: both from tools, input-port is basically where the characters are coming from (skip whitespace)
    [whitespace   (myLexer input-port)]
    [(eof)        (token-EOF)]
+ 
    ))
 
 
@@ -78,6 +80,8 @@
 ;;; '(LEFTPAREN NOT TRUE RIGHTPAREN)
 
 ;;; (myLexer example) -- Repeatedly call, gives one thing at a time
+
+
 
 
    
