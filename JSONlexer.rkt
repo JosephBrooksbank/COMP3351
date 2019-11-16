@@ -39,10 +39,9 @@
    ["null"                      (token-NULL)]
    ;;; I think this is technically minor parsing (no leading zeros, basically), however
    ;;; since its doable with regex in the lexer I figured might as well and Jeff said the same 
-   [(:: (:? #\-) (:or #\0 (:: (char-range #\1 #\9) (:* numeric))) (:? (:: #\. (:+ numeric)))) (token-NUMBER lexeme)]
+   [(:: (:? #\-) (:or #\0 (:: (char-range #\1 #\9) (:* numeric))) (:? (:: #\. (:+ numeric))(:? (:: (:or #\e #\E) (char-range #\1 #\9) (:* numeric))))) (token-NUMBER lexeme)]
    ;;;A string is: any character except for quotes (but including escaped quotes) that is surrounded by two double quotes. 
-   [(:: #\" (:* (union (intersection any-char (:~ #\")) "\\\"") )#\") (token-STRING lexeme)]
-  
+   [(:: #\" (:* (:or (intersection any-char (:~ #\" #\\)) "\\\"" "\\/" "\\b" "\\f" "\\n" "\\r" "\\t" (:: "\\u" (:= 4 (:or numeric #\A #\B #\C #\D #\E #\F)))))#\") (token-STRING lexeme)]
    ;;; whitespace and input-port: both from tools, input-port is basically where the characters are coming from (skip whitespace)
    [whitespace   (myLexer input-port)]
    [(eof)        (token-EOF)]
@@ -79,7 +78,3 @@
 
 ;;; Lexer that we didn't write does the pattern matching on "not" and "true", things that aren't one character 
 (define example (open-input-string "(not true)"))
-
-
-   
-

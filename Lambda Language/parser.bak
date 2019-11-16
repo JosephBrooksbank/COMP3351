@@ -14,7 +14,7 @@
    (start expr)
    (end EOF)
    (tokens
-           names
+           names-and-values
            parens
            lambda-def
            end-of-file)
