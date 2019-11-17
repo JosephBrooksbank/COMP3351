@@ -1,0 +1,12 @@
+#lang racket
+
+(require "JSONlexer.rkt"
+         "JSONparser.rkt")
+  
+
+(define (objectContains? json name)
+  (let ([list (match json [(ObjVal list) list])])
+    (let ([firstEntry (first list)])
+      (let ([jname (match firstEntry [(StrJSONPair st js) st])])
+        jname))))
+    

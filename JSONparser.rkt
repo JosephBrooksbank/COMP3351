@@ -52,13 +52,13 @@
           ;;; objects contain either the last item or an item in the middle of the list 
            (objType 
                    [(StrJSONPairType RIGHTCURLY) ( cons $1 empty)]
-                   [(StrJSONPairType COMMA objType) (append $3 (cons $1 empty))]
+                   [(StrJSONPairType COMMA objType) (append (cons $1 empty) $3)]
            )
 
            ;;; arrays are much the same 
            (arrayType         
             [(value RIGHTSQUARE) (cons $1 empty)]
-            [(value COMMA arrayType) (append $3 (cons $1 empty))]
+            [(value COMMA arrayType) (append (cons $1 empty) $3)]
             )
           )))
 
@@ -74,3 +74,8 @@
 (define (parsefile filename)
   (let ([in (open-input-file filename)])
     (parse in)))
+
+(define (firstobj str)
+  (let ([in (parsestr str)])
+    (match in
+      [(ObjVal list) list])))
