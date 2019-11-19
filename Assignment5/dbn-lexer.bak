@@ -94,19 +94,12 @@
    [(:or "COMMAND" "Command")                       (token-COMMAND)]
    [(:or "NUMBER" "Number")                         (token-NUMBER)]
    [(:or "ANTIALIAS" "Antialias")                   (token-ANTIALIAS)]
-   ;;; Step 1: Added Paper, Pen, Line, Set to lexer 
-   [(:or "Pen" "pen" "PEN")                         (token-PEN)]
-   [(:or "Paper" "paper" "PAPER")                   (token-PAPER)]
-   [(:or "Line" "line" "LINE")                      (token-LINE)]
-   [(:or "Set" "SET" "set")                         (token-SET)]
+   
+   ;;; TODO: Add numbers, which should be a token-NUMERICVALUE and contain an actual number, not a string
 
-   ;;; Step 2: Add identifiers and numbers 
+
    ; identifiers
-    [(:: alphabetic (:* (:or alphabetic numeric)))   (token-IDENTIFIER lexeme)]
-   ; numbers
-    [(:+ numeric)                                  (token-NUMERICVALUE (string->number lexeme))]
-
-    
+   ;;; TODO: Add identifiers, which should be a token-IDENTIFIER and contain the lexeme
 
    ; comments
    [(:: "//" (:* (char-complement (:or #\newline #\linefeed)))
