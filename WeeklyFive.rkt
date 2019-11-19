@@ -220,7 +220,40 @@
 
 
 
-    
+;;; Helper method for the extra credit option 
+(define (strictlyIncreasingHelp alist)
+  (if (empty? alist)
+      '()
+      ;;; Extracting the relevant data from the cdc array: [8:name, 10:week, 17-25: yearly data]
+      (letrec ([curDiseaseData (match (extractElements (first alist) (list 8 10 17 19 21 23 25))
+                                 [(Array li) li])])
+        ;;; if every year is more than the last year, it is monotonically increasing 
+        (if (and (>(strvalToNum (list-ref curDiseaseData 2)) (strvalToNum (list-ref curDiseaseData 3)))
+                 (>(strvalToNum (list-ref curDiseaseData 3)) (strvalToNum (list-ref curDiseaseData 4)))
+                 (>(strvalToNum (list-ref curDiseaseData 4)) (strvalToNum (list-ref curDiseaseData 5)))
+                 (>(strvalToNum (list-ref curDiseaseData 5)) (strvalToNum (list-ref curDiseaseData 6)))                
+                 (= 15 (strvalToNum (list-ref curDiseaseData 1))))
+            (append (list (string-append
+                           (strvalToString (list-ref curDiseaseData 0)) ":"
+                           (strvalToString (list-ref curDiseaseData 6)) " cases in 2013, "
+                           (strvalToString (list-ref curDiseaseData 5)) " cases in 2014, "
+                           (strvalToString (list-ref curDiseaseData 4)) " cases in 2015, "
+                           (strvalToString (list-ref curDiseaseData 3)) " cases in 2016, "
+                           (strvalToString (list-ref curDiseaseData 2)) " cases in 2017"                         
+                           )) (strictlyIncreasingHelp (rest alist)))
+            (strictlyIncreasingHelp (rest alist))))))
+
+
+;;; Extra credit function, returns diseases that are only strictly increasing 
+(define (strictlyIncreasing filename)
+   (let ([in (open-input-file filename)])
+    (let ([parsed (parse in)])
+      (let ([data (match (getField parsed "\"data\"")
+                    [(ObjVal val) val])])
+        (let ([dataList (match data
+                          [(Array aList) aList])])
+          (strictlyIncreasingHelp dataList))))))
+
     
 
     
