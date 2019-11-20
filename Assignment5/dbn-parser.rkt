@@ -47,11 +47,12 @@
 
     (statement
      ; a statement is one of these many things
-     ;;; TODO: Add Paper, Pen, Line, Set and Repeat
 
-     [(PAPER NUMERICVALUE) (paper-expr $2 (token-NUMERICVALUE 100) (token-NUMERICVALUE 100))]
-     [(PEN NUMERICVALUE) (pen-expr $2)]
-     [(LINE NUMERICVALUE NUMERICVALUE NUMERICVALUE NUMERICVALUE) (line-expr $2 $3 $4 $5)]
+     [(PAPER expr) (paper-expr $2 (token-NUMERICVALUE 100) (token-NUMERICVALUE 100))]
+     [(PEN expr) (pen-expr $2)]
+     [(LINE expr expr expr expr) (line-expr $2 $3 $4 $5)]
+     [(SET expr expr) (assignment-expr $2 $3)]
+     [(REPEAT IDENTIFIER expr expr NEWLINE block) (repeat-expr $2 $3 $4 $6)]
    
      
      ; print, simply prints to the console
@@ -87,8 +88,7 @@
      [(IDENTIFIER) (apply-expr $1 null)]
 
      [(block) $1]
-     )
-    
+     )    
  
     
     ; a block will simply return a list of statements, not a special struct
@@ -104,8 +104,7 @@
 
     ; legal l-values in the language
     (l-value
-     ;;; TODO: Add variables (they are l-values)
-    
+     [(IDENTIFIER) (var-expr $1)]
      [(LEFTBRACKET expr expr RIGHTBRACKET) (get-paper-loc $2 $3)])
     
     ; lists of expressions? Really only useful for fun calls
@@ -129,8 +128,7 @@
 
     (rvalues
      [(NUMERICVALUE) (numeric-expr $1)]
-     ;;; TODO: the second place you need to add variables, because they can also be r-values
-     
+     [(IDENTIFIER) (var-expr $1)]     
      [(LEFTBRACKET expr expr RIGHTBRACKET) (get-paper-loc $2 $3)]
      [(LESSTHAN TIME expr GREATERTHAN) (time-expr $3)]
      [(LESSTHAN MOUSE expr GREATERTHAN) (mouse-expr $3)]

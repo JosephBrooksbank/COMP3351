@@ -84,9 +84,7 @@
     ; Print
     [(print-expr exp) (printf "~a~n" (eval-expr env exp)) env]
 
-
-    ;;; Added Line Expressions 
-    [(line-expr x1 y1 x2 y2) (draw-line (eval-expr env x1) (eval-expr env y1) (eval-expr env x2) (eval-expr env y2))]
+    ; TODO: Add Line expressions
     
     ; Assignment to a paper location, this is a special case
     [(assignment-expr (get-paper-loc x y) color)
@@ -100,11 +98,7 @@
     ; Assignment to a variable name, need to see if it's there first
     ;;; TODO: Add variable assignment, this requires using the environment
     ;;;       to see if it's there and creating it if it's not
-    [(assignment-expr e1 e2) 
-      (let [(variable (apply-env env e1))]
-       (if (equal? variable #f)                         
-        (extend-env env e1 e2)
-        (setref! variable e2)))]
+    
     ; the antialias expression, for setting up antialias stuff
     [(antialias-expr expr)
      (let ([val (eval-expr env expr)])
@@ -175,15 +169,9 @@
     ; to create a function, we need to create a closure and store it in the
     ; current environment, so a new environment will be passed on here
     ;;; TODO [(command-fun sym params body)
-    [(command-fun sym params body)
-     (let ([funct (closure sym params body env)])
-       (extend-env env sym funct))]
      
     ; and we do the same thing for the numbers
     ;;; TODO (Achievement) [(number-fun sym params body)
-    [(number-fun sym params body)
-     (let ([numb (closure sym params body env)])
-       (extend-env env number-fun numb))]
      
 
     ; now for expressions as statements, these we ignore the return value of
@@ -191,28 +179,8 @@
     ; [(apply-expr sym exprs)  
      ; evaluate all the arugments, then call the function
          ; make sure we found it, or return an error otherwise
-       ; return the previous environment to be carried along
-
-    [(apply-expr sym params)
-     (let ([funName (apply-env env sym)])
-      (if (equal? funName #f)
-          (error (string-append sym " not defined"))
-          (let ([evaledParams (eval-parameters env params)])
-            (let ([funParams (match (deref funName)
-                               [(closure sym params body env) params])])
-             (let ([newEnv ((append env (map (lambda (k v) (extend-env env k v)) evaledParams funParams)))])
-               (eval-statement newEnv (match (deref funName) [(closure sym params body env) body])))))))]
-            
-            
-          
-       
-   ))
-
-
-(define (eval-parameters env exprList)
-  (if (empty? list)
-      '()
-      (append (list (eval-statement env (first list))) (eval-parameters env (rest exprList)))))
+       ; return the previous environment to be carried along     
+    ))
 
 
 (define (eval-expr env expr)
